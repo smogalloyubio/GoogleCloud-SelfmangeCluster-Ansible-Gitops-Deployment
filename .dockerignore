@@ -8,3 +8,18 @@ dist
 npm-debug.log
 Dockerfile
 .dockerignore
+
+# Terraform state and lock files
+terraform/terraform.tfstate*
+terraform/.terraform/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Build artifacts
+build/
