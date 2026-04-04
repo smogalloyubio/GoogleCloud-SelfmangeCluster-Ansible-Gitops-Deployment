@@ -1,0 +1,43 @@
+---
+- name: Build and Push to Docker Hub
+  hosts: localhost
+  connection: local
+  vars_files:
+    - secrets.yml
+  vars:
+    image_name: my-docker-app
+    image_tag: lastes 
+    full_image_path: "{{ DOCKER_USER }}/{{ image_name }}:{{ image_tag }}"
+
+  tasks:
+    - name: Login to Docker Hub locally
+      shell: "echo {{ DOCKER_PASSWORD}} | docker login -u {{ DOCKER_USER }} --password-stdin"
+
+    - name: Build Docker image locally
+      shell: "docker build -t {{ full_image_path }} ../"
+
+    - name: Push image to Docker Hub
+      shell: "docker push {{ full_image_path }}"
+
+- name: Deploy Image to GCP VMs
+  hosts: webservers
+  become: yes
+  vars_files:
+    - secrets.yml
+  vars:
+    full_image_path: "{{ DOCKER_USER}}/{{ image_name }}:{{ image_tag }}"
+
+  tasks:
+    - name: Ensure Docker is running on VM
+      service:
+        name: docker
+        state: started
+
+    - name: Pull image from Docker Hub on VM
+      shell: "docker pull {{ full_image_path }}"
+
+    - name: Stop and Remove old container if it exists
+      shell: "docker rm -f my-web-app || true"
+
+    - name: Run the new container
+      shell: "docker run -d --name my-web-app -p 80:80 {{ full_image_path }}"

@@ -1,0 +1,36 @@
+---
+- name: Deploy Image to GCP VMs
+  hosts: webservers
+  become: yes
+  vars_files:
+    - secrets.yml  
+  vars:
+    image_path: "rukevweubio/my-bitcoin-app"
+
+  tasks:
+    - name: Ensure Docker is installed and running
+      service:
+        name: docker
+        state: started
+
+    - name: Login to Docker Hub
+      shell: "echo {{ DOCKER_PASSWORD }} | docker login -u {{DOCKER_USER }} --password-stdin"
+
+    - name: Pull the latest image from Docker Hub
+      shell: "docker pull {{ image_path }}"
+
+    - name: Stop and remove existing container
+      shell: "docker rm -f my-web-app || true"
+
+    - name: Run new container on port 8080
+      shell: "docker run -d --name my-web-app -p 80:80 rukevweubio/my-bitcoin-app"
+
+    - name: Verify container is running
+      shell: "docker ps --filter 'name=my-web-app'"
+      register: container_status
+
+    - name: Print status
+      debug:
+        var: container_status.stdout_lines
+
+

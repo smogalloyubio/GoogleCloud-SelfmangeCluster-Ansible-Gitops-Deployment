@@ -1,0 +1,32 @@
+---
+- name: Install docker on google cloud
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Update the virtual machine
+      apt:
+        update_cache: yes
+
+    - name: Install docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start docker daemon
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add machine user to docker
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Verify docker user
+      command: docker ps
+      become_user: ubuntu
+
+    - name: Reset connection to apply group changes
+      meta: reset_connection

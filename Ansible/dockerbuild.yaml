@@ -1,0 +1,43 @@
+---
+- name: Build and Push Docker Image
+  hosts: localhost
+  connection: local
+  vars:
+    project_id: "ubioworo-project"
+    region: "us-central1"
+    repo_name: "googla-app-deploy"
+    image_name: "my-app"
+    image_tag: "latest"
+    full_image_path: "{{ region }}-docker.pkg.dev/{{ project_id }}/{{ repo_name }}/{{ image_name }}:{{ image_tag }}"
+
+  tasks:
+    - name: Authenticate Docker to Google Artifact Registry
+      shell: "gcloud auth configure-docker {{ region }}-docker.pkg.dev --quiet"
+
+    - name: Build Docker image locally
+     
+      shell: "docker build -t {{ full_image_path }} ../"
+
+    - name: Push image to Google Artifact Registry
+      shell: "docker push {{ full_image_path }}"
+
+- name: Deploy Image to GCP VMs
+  hosts: webservers
+  become: yes
+  vars:
+
+    full_image_path: "us-central1-docker.pkg.dev/ubioworo-project/googla-app-deploy/my-app:latest"
+
+  tasks:
+    - name: Authenticate remote Docker to GCP
+      shell: "gcloud auth configure-docker us-central1-docker.pkg.dev --quiet"
+
+    - name: Pull the latest image from Registry
+      shell: "docker pull {{ full_image_path }}"
+
+    - name: Stop and Remove old container (if exists)
+      shell: "docker rm -f my-web-app || true"
+
+    - name: Run the new container
+     
+      shell: "docker run -d --name my-web-app -p 80:80 {{ full_image_path }}"
