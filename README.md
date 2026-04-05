@@ -171,10 +171,60 @@ This step handled everything that is “mutable” — installing Docker, buildi
 ---
 
 3. **Playbook 2 – Build & Push Docker Image** (`localhost-build-push.yml`)  
-   - Ran from my **local machine** (or the Terraform Docker container).  
-   - Configured Docker to authenticate with GCP Artifact Registry using `gcloud auth configure-docker`.  
-   - Built the Docker image locally from the `./app` folder.  
+   - Ran from my **local machine** (or the Terraform Docker container).   
+   - Built the Docker image locally from the  root directory folder.  
    - Tagged and pushed the image to the private Artifact Registry created by Terraform.
+  
+```
+---
+- name: Build and Push Docker Image
+  hosts: localhost
+  connection: local
+  vars:
+    project_id: "ubioworo-project"
+    region: "us-central1"
+    repo_name: "googla-app-deploy"
+    image_name: "my-app"
+    image_tag: "latest"
+    full_image_path: "{{ region }}-docker.pkg.dev/{{ project_id }}/{{ repo_name }}/{{ image_name }}:{{ image_tag }}"
+
+  tasks:
+    - name: Authenticate Docker to Google Artifact Registry
+      shell: "gcloud auth configure-docker {{ region }}-docker.pkg.dev --quiet"
+
+    - name: Build Docker image locally
+      community.docker.docker_image:
+        name: "{{ full_image_path }}"
+        build:
+          path: ../ l
+        source: build
+
+    - name: Push image to Google Artifact Registry
+      community.docker.docker_image:
+        name: "{{ full_image_path }}"
+        push: yes
+        source: local
+
+- name: Deploy Image to GCP VMs
+  hosts: webservers
+  become: yes
+  vars:
+    full_image_path: "us-central1-docker.pkg.dev/ubioworo-project/googla-app-deploy/my-app:latest"
+
+  tasks:
+    - name: Authenticate remote Docker to GCP
+      shell: "gcloud auth configure-docker us-central1-docker.pkg.dev --quiet"
+
+    - name: Pull and Run the new container
+      community.docker.docker_container:
+        name: my-web-service
+        image: "{{ full_image_path }}"
+        state: started
+        restart: yes
+        pull: yes
+        ports:
+          - "80:80"
+```
 
 4. **Playbook 3 – Deploy & Run the Container on Both VMs** (`vms-deploy-app.yml`)  
    - Targeted the `vms` group again.  
