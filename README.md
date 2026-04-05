@@ -308,7 +308,7 @@ Below are real screenshots from the deployed project, proving that the infrastru
 
 ### 1. Web Application Running Successfully (via Load Balancer)
 
-![Web Application Running]()
+![Web Application Running](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2002.03.17.png)
 
 ### 2. GCP Load Balancer Configuration and Health Check Status
 
