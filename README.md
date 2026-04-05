@@ -71,6 +71,8 @@ I created and applied the following **modular Terraform resources**:
    - TCP 22 (SSH) restricted to my IP for Ansible.
 
 ---
+![terraform provisioning](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-04%20at%2023.25.29.png)
+---
 
 ### Step 3: Setting Up Terraform Execution Environment on the VM
 To ensure a consistent and reproducible Terraform execution environment, I created a custom Docker-based toolchain that includes both Terraform and the Google Cloud SDK (gcloud CLI). This approach eliminates version conflicts, and it works on my machine 
