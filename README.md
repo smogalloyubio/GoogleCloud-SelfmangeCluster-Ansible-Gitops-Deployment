@@ -169,7 +169,7 @@ This step handled everything that is “mutable” — installing Docker, buildi
 ```
 
 ---
-![ansible deployment]()
+![ansible deployment](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2000.58.24.png)
 ---
 
 3. **Playbook 2 – Build & Push Docker Image** (`builddocker.yaml`)  
