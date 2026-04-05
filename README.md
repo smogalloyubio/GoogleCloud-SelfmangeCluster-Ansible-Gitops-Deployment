@@ -327,3 +327,5 @@ The Global HTTP(S) Load Balancer is healthy, with both backend VMs showing **Hea
 ** web application running**
 - web appliaction running using loadbalacer
   ![web application](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2001.44.17.png)
+
+![web applixation 2](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2001.44.31.png)
