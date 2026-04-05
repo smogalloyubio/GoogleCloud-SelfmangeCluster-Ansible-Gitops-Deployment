@@ -25,3 +25,6 @@ dist-ssr
 .terraform/
 *.tfstate
 *.tfstate.*
+.terraform/
+*.tfstate
+*.tfstate.backup
