@@ -301,3 +301,21 @@ ansible-playbook playbooks/vms-deploy-app.yml
 ansible-playbook -i inventory.ini -m  shell -a "docker ps -a"
 
 ```
+
+## 5. Project Screenshots & Results
+
+Below are real screenshots from the deployed project, proving that the infrastructure and application are working as expected.
+
+### 1. Web Application Running Successfully (via Load Balancer)
+
+![Web Application Running]()
+
+### 2. GCP Load Balancer Configuration and Health Check Status
+
+![GCP Load Balancer]()
+
+**Description:**  
+The Global HTTP(S) Load Balancer is healthy, with both backend VMs showing **Healthy** status. You can see the forwarding rule, backend service, and health checks all configured correctly by Terraform.
+
+---
+
