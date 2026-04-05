@@ -83,6 +83,10 @@ What I Did:
 - Latest Google Cloud SDK (gcloud CLI)
 - Required dependencies and tools for GCP authentication
 
+---
+![terraform outpu](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2001.55.47.png)
+---
+
 1. Built the Docker image
 - I built the custom image locally using the following command:
 ```
