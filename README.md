@@ -115,3 +115,55 @@ terraform apply plan.tfplan
 - Portability: The environment can be shared with team members or used in CI/CD pipelines.
 - Isolation: No pollution of the host VM with multiple tool versions.
 - Security: gcloud authentication can be handled safely via mounted credentials or workload identity.
+
+
+### Step 4: Ansible Configuration Management and Application Deployment
+
+After the Terraform infrastructure was fully provisioned (VPC, Subnet, two Compute Engine VMs, Artifact Registry, Load Balancer, and Firewall rules), I moved to the **Configuration-as-Code (CaC)** phase using **Ansible**.  
+
+This step handled everything that is “mutable” — installing Docker, building the application image, pushing it to the private Artifact Registry, and finally deploying and running the container on both VMs. I used Ansible because it is agentless, idempotent, and perfect for zero-downtime application updates.
+
+#### What I Did (Exact Steps I Carried Out):
+
+1. **Prepared the Ansible Environment**  
+   - Created a clean Ansible project structure with playbooks, host, and inventory.  
+   - Installed  Docker on  vm 
+
+2. **Playbook 1 – Install Docker on Both VMs** (`vms-docker-install.yml`)  
+   - Targeted the host group `vms`.  
+   - Installed Docker Engine, added the official Docker repository, started and enabled the Docker service.  
+   - Made the playbook fully idempotent (safe to run multiple times).
+
+3. **Playbook 2 – Build & Push Docker Image** (`localhost-build-push.yml`)  
+   - Ran from my **local machine** (or the Terraform Docker container).  
+   - Configured Docker to authenticate with GCP Artifact Registry using `gcloud auth configure-docker`.  
+   - Built the Docker image locally from the `./app` folder.  
+   - Tagged and pushed the image to the private Artifact Registry created by Terraform.
+
+4. **Playbook 3 – Deploy & Run the Container on Both VMs** (`vms-deploy-app.yml`)  
+   - Targeted the `vms` group again.  
+   - Pulled the latest image from Artifact Registry.  
+   - Started the container with `restart_policy: always`, port mapping `80:80`, and detached mode.  
+   - The Load Balancer (already provisioned by Terraform) immediately started routing traffic to both healthy containers.
+
+5. **Firewall Validation**  
+   - Verified that the VPC firewall rules (created in Terraform) correctly allow TCP 80 traffic **only** from the Load Balancer proxy ranges and health-check ranges.
+
+#### Commands Executed:
+
+```bash
+# 1. Prepare Ansible (run once)
+cd ansible
+pip install -r requirements.txt                    # installs community.docker collection
+
+# 2. Install Docker on the two VMs
+ansible-playbook playbooks/vms-docker-install.yml
+
+# 3. Build and push the Docker image from localhost
+ansible-playbook playbooks/localhost-build-push.yml
+
+# 4. Deploy the container to both VMs
+ansible-playbook playbooks/vms-deploy-app.yml
+
+# 5. Quick verification
+ansible vms -m command -a "docker ps"             # shows running container on both VMs
