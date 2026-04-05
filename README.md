@@ -169,8 +169,10 @@ This step handled everything that is “mutable” — installing Docker, buildi
 ```
 
 ---
+![ansible deployment]()
+---
 
-3. **Playbook 2 – Build & Push Docker Image** (`localhost-build-push.yml`)  
+3. **Playbook 2 – Build & Push Docker Image** (`builddocker.yaml`)  
    - Ran from my **local machine** (or the Terraform Docker container).   
    - Built the Docker image locally from the  root directory folder.  
    - Tagged and pushed the image to the private Artifact Registry created by Terraform.
@@ -225,9 +227,10 @@ This step handled everything that is “mutable” — installing Docker, buildi
         ports:
           - "80:80"
 ```
-
+![ansible deployment]()
+---
 4. **Playbook 3 – Deploy & Run the Container on Both VMs** (`vms-deploy-app.yml`)  
-   - Targeted the `vms` group again.  
+   - Targeted the  virtual  machine.  
    - Pulled the latest image from Artifact Registry.  
    - Started the container with `restart_policy: always`, port mapping `80:80`, and detached mode.  
    - The Load Balancer (already provisioned by Terraform) immediately started routing traffic to both healthy containers.
