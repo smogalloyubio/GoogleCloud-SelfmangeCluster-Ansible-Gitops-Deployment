@@ -53,6 +53,8 @@ I followed a disciplined, professional workflow that I use on real client projec
 ### Step 2: Terraform Infrastructure Provisioning (IaC Phase)
 I created and applied the following **modular Terraform resources**:
 
+![terraform modules](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2001.57.08.png)
+
 1. **VPC Module** – Created a custom Virtual Private Cloud with `auto_create_subnetworks = false`.
 2. **Subnet Module** – Provisioned a regional subnet inside the VPC.
 3. **Artifact Registry Module** – Created a private Docker repository (`docker` format).
