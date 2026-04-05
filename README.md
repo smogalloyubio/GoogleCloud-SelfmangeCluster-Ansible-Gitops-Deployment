@@ -282,19 +282,22 @@ This step handled everything that is “mutable” — installing Docker, buildi
 
 #### Commands Executed:
 
-```bash
+```
 # 1. Prepare Ansible (run once)
-cd ansible
-pip install -r requirements.txt                    # installs community.docker collection
+cd Ansible 
+pip install ansible -y                  
 
 # 2. Install Docker on the two VMs
-ansible-playbook playbooks/vms-docker-install.yml
+ansible-playbook  -i inventory.ini  dockerbuild.yaml
+ansible-playbook -i inventory.ini dockerbuild.yaml
 
 # 3. Build and push the Docker image from localhost
-ansible-playbook playbooks/localhost-build-push.yml
+ansible-playbook -i inventory.ini  installandconfiguredocker.yaml
 
 # 4. Deploy the container to both VMs
 ansible-playbook playbooks/vms-deploy-app.yml
 
-# 5. Quick verification
-ansible vms -m command -a "docker ps"             # shows running container on both VMs
+#5 test the  virtual machine   if the docker is running
+ansible-playbook -i inventory.ini -m  shell -a "docker ps -a"
+
+```
