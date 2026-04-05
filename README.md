@@ -227,7 +227,7 @@ This step handled everything that is “mutable” — installing Docker, buildi
         ports:
           - "80:80"
 ```
-![ansible deployment]()
+![ansible deployment](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2000.58.28.png)
 ---
 4. **Playbook 3 – Deploy & Run the Container on Both VMs** (`vms-deploy-app.yml`)  
    - Targeted the  virtual  machine.  
