@@ -127,7 +127,9 @@ This step handled everything that is “mutable” — installing Docker, buildi
 
 1. **Prepared the Ansible Environment**  
    - Created a clean Ansible project structure with playbooks, host, and inventory.  
-   - Installed  Docker on  vm 
+   - Installed  Docker on  vm
+
+![ansible tesing vm connection](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2000.03.58.png)
 
 2. **Playbook 1 – Install Docker on Both VMs** (`playbook.yaml`)  
    - Targeted the host group  virtual machine   
