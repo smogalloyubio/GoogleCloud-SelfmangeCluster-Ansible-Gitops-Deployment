@@ -107,6 +107,7 @@ terraform init
 terraform plan -out=plan.tfplan
 terraform apply plan.tfplan
 ```
+![ terraform version and gcloud version](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-03%20at%2023.32.42.png)
 ### why chose this method
 - Consistency: Same Terraform and gcloud versions every time, regardless of the host machine.
 - Portability: The environment can be shared with team members or used in CI/CD pipelines.
