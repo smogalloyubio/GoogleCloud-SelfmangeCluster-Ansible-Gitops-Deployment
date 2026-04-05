@@ -231,11 +231,51 @@ This step handled everything that is “mutable” — installing Docker, buildi
 ```
 ![ansible deployment](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/Screenshot%202026-04-05%20at%2000.58.28.png)
 ---
-4. **Playbook 3 – Deploy & Run the Container on Both VMs** (`vms-deploy-app.yml`)  
+4. **Playbook 3 – Deploy & Run the Container on Both VMs** (`pullinstalldockerimage.yaml`)  
    - Targeted the  virtual  machine.  
    - Pulled the latest image from Artifact Registry.  
    - Started the container with `restart_policy: always`, port mapping `80:80`, and detached mode.  
    - The Load Balancer (already provisioned by Terraform) immediately started routing traffic to both healthy containers.
+   - ansible-playbook -i inventory.ini  pullinstalldockerimage.yaml  to deploy the docker image  to teh virtual machine
+![ansible  deployment to te virtual machine]()
+
+```
+---
+- name: Deploy Image to GCP VMs
+  hosts: webservers2
+  become: yes
+  vars_files:
+    - secrets.yml  
+  vars:
+    image_path: "rukevweubio/ecommerce-app"
+
+  tasks:
+    - name: Ensure Docker is installed and running
+      service:
+        name: docker
+        state: started
+
+    - name: Login to Docker Hub
+      shell: "echo {{ DOCKER_PASSWORD }} | docker login -u {{DOCKER_USER }} --password-stdin"
+
+    - name: Pull the latest image from Docker Hub
+      shell: "docker pull {{ image_path }}"
+
+    - name: Stop and remove existing container
+      shell: "docker rm -f my-web-app2 || true"
+
+
+    - name: Run new container on port 8080
+      shell: "docker run -d --name my-web-app2 -p 80:80 rukevweubio/ecommerce-app"
+
+    - name: Verify container is running
+      shell: "docker ps --filter 'name=my-web-app2'"
+      register: container_status
+
+    - name: Print status
+      debug:
+        var: container_status.stdout_lines
+```
 
 5. **Firewall Validation**  
    - Verified that the VPC firewall rules (created in Terraform) correctly allow TCP 80 traffic **only** from the Load Balancer proxy ranges and health-check ranges.
