@@ -129,10 +129,46 @@ This step handled everything that is “mutable” — installing Docker, buildi
    - Created a clean Ansible project structure with playbooks, host, and inventory.  
    - Installed  Docker on  vm 
 
-2. **Playbook 1 – Install Docker on Both VMs** (`vms-docker-install.yml`)  
-   - Targeted the host group `vms`.  
+2. **Playbook 1 – Install Docker on Both VMs** (`playbook.yaml`)  
+   - Targeted the host group  virtual machine   
    - Installed Docker Engine, added the official Docker repository, started and enabled the Docker service.  
    - Made the playbook fully idempotent (safe to run multiple times).
+
+```
+- name: Install docker on google cloud
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Update the virtual machine
+      apt:
+        update_cache: yes
+
+    - name: Install docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start docker daemon
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add machine user to docker
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Verify docker user
+      command: docker ps
+      become_user: ubuntu
+
+    - name: Reset connection to apply group changes
+      meta: reset_connection
+```
+
+---
 
 3. **Playbook 2 – Build & Push Docker Image** (`localhost-build-push.yml`)  
    - Ran from my **local machine** (or the Terraform Docker container).  
