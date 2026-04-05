@@ -18,7 +18,7 @@ Access the application via the Load Balancer public IP on port 80. Traffic is au
 
 ---
 Google cloud Digram
-![Google cloud diagram]
+![Google cloud diagram](https://github.com/smogalloyubio/GoogleCloud-Loadbalancing-Autoscaling/blob/main/picture/my-docker-image.jpeg)
 
 
 ---
